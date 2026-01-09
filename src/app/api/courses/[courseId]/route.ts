@@ -126,3 +126,63 @@ export async function PATCH(
     }
 
 }
+
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ courseId: string }> }
+) {
+
+    await dbConnect()
+
+    try {
+
+        const session = await auth()
+        const user = session?.user
+
+        if (!session || !user) {
+            console.log("Unauthorized")
+            return NextResponse.json({
+                success: false,
+                message: "Unauthorized"
+            }, { status: 401 })
+        }
+
+        const { courseId } = await params
+
+        // const user = { _id: "654321654321654321654321" };
+        // const courseId = "69613c0b4efe3ef7c56ee595"
+
+        const course = await CourseModel.findById(courseId)
+
+        if (!course) {
+            console.error("Course not found")
+            return NextResponse.json({
+                success: false,
+                message: "Course not found"
+            }, { status: 404 })
+        }
+
+        if (course.instructor.toString() !== user._id?.toString()) {
+            console.error("Unauthorized")
+            return NextResponse.json({
+                success: false,
+                message: "Unauthorized, only owner can delete the course"
+            }, { status: 401 })
+        }
+
+        await CourseModel.findByIdAndDelete(courseId)
+
+        return NextResponse.json({
+            success: true,
+            message: "Course deleted successfully"
+        }, { status: 200 })
+
+    } catch (error) {
+        console.error("Error in delete request for course", error)
+        return NextResponse.json({
+            success: false,
+            message: "Internal Server Error"
+        }, { status: 500 })
+    }
+
+}
