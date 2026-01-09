@@ -6,14 +6,14 @@ import { courseSchema } from "@/schemas/courseSchema";
 
 export async function GET(
     request: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
 
     await dbConnect()
 
     try {
-
-        const course = await CourseModel.findById(params.courseId)
+        const { courseId } = await params
+        const course = await CourseModel.findById(courseId)
             .populate("instructor", "username email")
             .populate("chapters")
 
@@ -46,7 +46,7 @@ export async function GET(
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
 
     await dbConnect()
@@ -55,7 +55,7 @@ export async function PATCH(
 
         const session = await auth()
         const user = session?.user
-        const { courseId } = params
+        const { courseId } = await params
 
         if (!session || !user) {
             console.error("Unauthorized")
