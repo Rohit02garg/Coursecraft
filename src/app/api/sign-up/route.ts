@@ -55,6 +55,7 @@ export async function POST(request: Request) {
                     existingUserByEmail.password = hashedPassword
                     existingUserByEmail.verifyCode = verifyCode
                     existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 30 * 60 * 1000)
+                    existingUserByEmail.username = username;
                     await existingUserByEmail.save()
 
                 }

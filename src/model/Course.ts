@@ -67,6 +67,24 @@ const CourseSchema: Schema<Course> = new Schema({
         default: Date.now
     }
 })
+CourseSchema.pre("deleteOne", { document: true, query: false }, async function (next) {
+    try {
+        const courseId = this._id;
+
+        // 1. Delete all CourseProgress documents tied to this course
+        await mongoose.model('CourseProgress').deleteMany({ courseId });
+        // 2. Remove this course's ID from every User's 'enrolledCourses' array
+        await mongoose.model('User').updateMany(
+            { enrolledCourses: courseId },
+            { $pull: { enrolledCourses: courseId } } // $pull removes the matching ID from arrays
+        );
+        next(); // Tell Mongoose it's safe to proceed with the actual Course deletion
+    } catch (error: any) {
+        next(error); // If something fails, abort the deletion process
+    }
+});
 
 const CourseModel = (mongoose.models.Course as mongoose.Model<Course>) || mongoose.model<Course>("Course", CourseSchema);
+
+
 export default CourseModel;

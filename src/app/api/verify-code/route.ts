@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
             if (isCodeNotExpired) {
 
-                const isCodeMatched = await bcrypt.compare(code, user.verifyCode)
+                const isCodeMatched = code === user.verifyCode
 
                 if (isCodeMatched) {
 
