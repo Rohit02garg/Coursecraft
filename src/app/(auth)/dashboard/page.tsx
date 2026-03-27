@@ -54,9 +54,9 @@ export default function DashboardPage() {
 
     if (status === "loading" || (status === "authenticated" && isLoadingData)) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1A237E]"></div>
-                <p className="mt-4 text-[#1A237E] font-medium">Loading your portal...</p>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                <p className="mt-4 text-slate-500 font-medium">Loading your portal...</p>
             </div>
         );
     }
@@ -73,21 +73,21 @@ export default function DashboardPage() {
         <div className="flex min-h-screen bg-slate-50 font-sans">
             {/* SIDEBAR */}
             <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 shadow-sm fixed h-full z-10">
-                <div className="h-20 flex items-center px-8 border-b border-slate-100">
-                    <span className="font-extrabold text-2xl text-[#1A237E] tracking-tight">CourseCraft</span>
+                <div className="h-16 flex items-center px-8 border-b border-slate-100">
+                    <span className="font-bold text-xl text-slate-900 tracking-tight">CourseCraft</span>
                 </div>
 
-                <nav className="flex-1 px-4 py-8 space-y-2">
-                    <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 bg-blue-50 text-[#1A237E] rounded-xl font-semibold shadow-sm">
-                        <BookOpen className="h-5 w-5" />
+                <nav className="flex-1 px-4 py-8 space-y-1">
+                    <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2.5 bg-slate-100/80 text-indigo-600 rounded-xl font-bold shadow-sm text-sm">
+                        <BookOpen className="h-4 w-4" />
                         My Learning
                     </Link>
-                    <Link href="/courses" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                        <Compass className="h-5 w-5" />
-                        Explore Courses
+                    <Link href="/courses" className="flex items-center gap-3 px-4 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors text-sm">
+                        <Compass className="h-4 w-4" />
+                        Explore
                     </Link>
-                    <Link href="/profile" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-colors">
-                        <UserIcon className="h-5 w-5" />
+                    <Link href="/profile" className="flex items-center gap-3 px-4 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors text-sm">
+                        <UserIcon className="h-4 w-4" />
                         Profile
                     </Link>
                 </nav>
@@ -96,14 +96,14 @@ export default function DashboardPage() {
                     {/* Issue #3 - Role-based button */}
                     {session?.user?.role === "INSTRUCTOR" ? (
                         <Link href="/instructor">
-                            <Button variant="outline" className="w-full justify-start text-[#1A237E] border-slate-300 hover:border-[#1A237E] hover:bg-blue-50 transition-colors shadow-sm">
+                            <Button variant="outline" className="w-full justify-start text-indigo-600 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/30 transition-colors shadow-none rounded-xl text-xs font-bold py-5">
                                 <Monitor className="mr-2 h-4 w-4" />
                                 Instructor Studio
                             </Button>
                         </Link>
                     ) : (
                         <Link href="/become-instructor">
-                            <Button variant="outline" className="w-full justify-start text-[#1A237E] border-slate-300 hover:border-[#1A237E] hover:bg-blue-50 transition-colors shadow-sm">
+                            <Button variant="outline" className="w-full justify-start text-indigo-600 border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/30 transition-colors shadow-none rounded-xl text-xs font-bold py-5">
                                 <PlusCircle className="mr-2 h-4 w-4" />
                                 Teach on CourseCraft
                             </Button>
@@ -122,75 +122,73 @@ export default function DashboardPage() {
 
             {/* MAIN CONTENT AREA */}
             <main className="flex-1 md:ml-64 p-6 md:p-12 overflow-y-auto w-full">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-                    <div className="relative w-full max-w-md">
-                        <Search className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+                <div className="flex items-center justify-between mb-12">
+                    <div className="relative w-full max-w-sm">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <Input
-                            placeholder="Search your courses..."
+                            placeholder="Search your library..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="pl-10 h-11 bg-white border-slate-200 rounded-full shadow-sm focus-visible:ring-[#1A237E]"
+                            className="pl-11 h-11 bg-white border-slate-200 rounded-xl shadow-none focus-visible:ring-indigo-600 text-sm font-medium"
                         />
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-full text-white flex items-center justify-center font-bold shadow-md">
+                        <div className="h-10 w-10 bg-slate-100 border border-slate-200 rounded-full text-indigo-600 flex items-center justify-center font-bold">
                             {session?.user?.username?.charAt(0).toUpperCase() || "U"}
                         </div>
                     </div>
                 </div>
 
                 {/* WELCOME SECTION */}
-                <header className="mb-10 flex flex-col xl:flex-row xl:items-end justify-between gap-6">
+                <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
                     <div>
-                        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
-                            Welcome back, <span className="text-[#1A237E]">{session?.user?.username || "Student"}</span>! 👋
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+                            Welcome back, <span className="text-indigo-600">{session?.user?.username || "Student"}</span>.
                         </h1>
-                        <p className="text-slate-500 mt-2 text-lg font-medium">Pick up right where you left off.</p>
+                        <p className="text-slate-500 mt-2 text-base font-medium">Continue where you left off.</p>
                     </div>
 
-                    <div className="flex gap-4 sm:gap-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                        <div className="px-4 text-center">
-                            <span className="block text-2xl font-bold text-[#1A237E]">{enrolledCourses.length}</span>
-                            <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Active Courses</span>
+                    <div className="flex gap-8 bg-white p-6 rounded-2xl border border-slate-100">
+                        <div className="text-center">
+                            <span className="block text-2xl font-bold text-slate-900">{enrolledCourses.length}</span>
+                            <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Enrolled</span>
                         </div>
-                        <div className="w-px bg-slate-200"></div>
-                        <div className="px-4 text-center">
-                            <span className="block text-2xl font-bold text-emerald-600">
+                        <div className="w-px bg-slate-100"></div>
+                        <div className="text-center">
+                            <span className="block text-2xl font-bold text-indigo-600">
                                 {enrolledCourses.filter(c => c.progress === 100).length}
                             </span>
-                            <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Completed</span>
+                            <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Completed</span>
                         </div>
                     </div>
                 </header>
 
                 {/* ENROLLED COURSES GRID */}
                 {filteredCourses.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                         {filteredCourses.map((course) => (
-                            <div key={course.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300 group flex flex-col">
-                                <div className="h-44 bg-slate-200 relative overflow-hidden shrink-0">
-                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    <div className="absolute inset-0 bg-[#1A237E]/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <PlayCircle className="text-white h-14 w-14 drop-shadow-lg" />
-                                    </div>
+                            <div key={course.id} className="bg-white rounded-3xl overflow-hidden border border-slate-100 transition-all duration-300 group flex flex-col">
+                                <div className="h-48 bg-slate-50 relative overflow-hidden shrink-0 border-b border-slate-50">
+                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90" />
                                 </div>
 
-                                <div className="p-5 flex flex-col flex-1">
-                                    <h3 className="font-bold text-lg text-slate-900 line-clamp-2 leading-tight">{course.title}</h3>
-                                    <p className="text-sm text-slate-500 mt-1 font-medium">{course.instructor}</p>
+                                <div className="p-6 flex flex-col flex-1">
+                                    <h3 className="font-bold text-base text-slate-900 line-clamp-2 leading-snug">{course.title}</h3>
+                                    <p className="text-xs text-slate-400 mt-1.5 font-bold uppercase tracking-wider">{course.instructor}</p>
 
-                                    <div className="mt-auto pt-6">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                                <div className="h-full bg-gradient-to-r from-blue-600 to-[#1A237E] rounded-full transition-all duration-1000" style={{ width: `${course.progress}%` }}></div>
-                                            </div>
-                                            <span className="text-xs font-bold text-[#1A237E]">{course.progress}%</span>
+                                    <div className="mt-auto pt-8">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
+                                            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">{course.progress}%</span>
+                                        </div>
+                                        <div className="h-1.5 bg-slate-50 rounded-full overflow-hidden">
+                                            <div className="h-full bg-indigo-600 rounded-full transition-all duration-1000" style={{ width: `${course.progress}%` }}></div>
                                         </div>
 
                                         <Link href={`/learn/${course.id}`}>
-                                            <Button className="w-full mt-4 bg-slate-900 hover:bg-[#1A237E] text-white rounded-xl shadow-md transition-all">
-                                                Continue Learning
+                                            <Button className="w-full mt-6 bg-slate-900 hover:bg-black text-white rounded-2xl h-12 text-sm font-bold transition-all shadow-sm">
+                                                Continue
                                             </Button>
                                         </Link>
                                     </div>

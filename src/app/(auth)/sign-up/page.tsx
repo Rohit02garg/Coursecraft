@@ -7,7 +7,7 @@ import * as z from "zod";
 import { useDebounceCallback } from "usehooks-ts";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { Loader2, User, Mail, Lock } from "lucide-react";
+import { Loader2, User, Mail, Lock, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ export default function SignUpPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
-  const debounced = useDebounceCallback(setUsername, 100);
+  const debounced = useDebounceCallback(setUsername, 500);
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -69,15 +69,15 @@ export default function SignUpPage() {
     try {
       const response = await axios.post("/api/sign-up", data);
 
-      toast.success("Success", {
-        description: response.data.message || "Signed up successfully!",
+      toast.success("Account Created", {
+        description: response.data.message || "Verification code sent to your email.",
       });
 
       router.push(`/verify/${data.username}`);
     } catch (error) {
       console.error("Error during sign up:", error);
       const axiosError = error as AxiosError<any>;
-      toast.error("Sign Up Failed", {
+      toast.error("Registration Failed", {
         description: axiosError.response?.data.message ?? "Something went wrong",
       });
     } finally {
@@ -86,41 +86,52 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#8DA2EA] p-4 md:p-8">
-      <div className="w-full max-w-5xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[650px]">
-        {/* LEFT SIDE - Illustration Area */}
-        <div className="hidden md:flex md:w-1/2 bg-[#E6F0FF] relative items-center justify-center p-12 overflow-hidden">
-          {/* Decorative background elements matching the theme */}
-          <div className="absolute top-12 left-12 w-6 h-6 border-2 border-slate-300 rounded-full"></div>
-          <div className="absolute bottom-20 right-16 w-4 h-4 border-2 border-slate-400 rounded-full"></div>
-          <svg className="absolute top-24 right-20 w-16 h-16 text-slate-300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 50 Q 25 25 50 50 T 90 50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <path d="M10 70 Q 25 45 50 70 T 90 70" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <div className="flex justify-center items-center min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
+      <div className="w-full max-w-5xl bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[680px]">
+        
+        {/* LEFT SIDE - Premium Subtle Illustration Area */}
+        <div className="hidden md:flex md:w-1/2 bg-slate-50 relative items-center justify-center p-12 overflow-hidden border-r border-slate-50">
+          <div className="absolute top-12 left-12 w-8 h-8 border border-slate-200 rounded-full opacity-50"></div>
+          <div className="absolute bottom-20 right-16 w-6 h-6 border border-slate-200 rounded-full opacity-50"></div>
+          <svg className="absolute top-24 right-20 w-32 h-32 text-slate-100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 50 Q 25 25 50 50 T 90 50" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+            <path d="M10 70 Q 25 45 50 70 T 90 70" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
           </svg>
 
-          {/* Place your actual image here later. Example:
-              <img src="/student-illustration.png" alt="Student" className="z-10 w-full max-w-sm object-contain" />
-          */}
           <div className="z-10 text-center flex flex-col items-center">
-            <div className="w-48 h-48 bg-white/50 backdrop-blur-md rounded-2xl border border-white flex justify-center items-center shadow-sm mb-6 rotate-3 hover:rotate-0 transition-transform">
-              <span className="text-slate-400/80 font-medium px-4 text-center">Place Illustration Here</span>
+            <div className="w-56 h-56 bg-white rounded-[32px] border border-slate-100 flex justify-center items-center shadow-sm mb-8 rotate-1">
+                <div className="p-8 text-center">
+                    <div className="h-12 w-12 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <User className="h-6 w-6 text-indigo-600" />
+                    </div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">Join our elite<br/>learning network</p>
+                </div>
             </div>
+            <h2 className="text-xl font-bold text-slate-900 tracking-tight px-10">Premium access to high-end courses.</h2>
           </div>
         </div>
 
         {/* RIGHT SIDE - Form Area */}
-        <div className="w-full md:w-1/2 p-8 md:p-14 flex flex-col justify-center bg-white">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-[#1A237E] mb-2">
-              Student Sign Up
+        <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white relative">
+          
+          <Link href="/" className="absolute top-8 left-8 md:left-16">
+            <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 flex items-center transition-colors">
+              <ChevronLeft className="h-3 w-3 mr-1" /> Home
+            </button>
+          </Link>
+
+          <div className="mb-10 mt-4">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">
+              Create Account
             </h1>
-            <p className="text-sm text-gray-500">
-              Hey, enter your details to create your account
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
+              Start your journey with coursecraft today
             </p>
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              
               {/* USERNAME FIELD */}
               <FormField
                 name="username"
@@ -129,10 +140,10 @@ export default function SignUpPage() {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <User className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400" />
+                        <User className="absolute left-4 top-4 h-4 w-4 text-slate-400" />
                         <Input
-                          placeholder="Enter your username"
-                          className="pl-12 h-12 rounded-xl border border-gray-200 bg-white shadow-sm focus-visible:ring-[#1A237E]"
+                          placeholder="Your unique handle"
+                          className="pl-12 h-12 rounded-2xl border-slate-100 bg-white focus-visible:ring-indigo-600 text-sm font-medium"
                           {...field}
                           onChange={(e) => {
                             field.onChange(e);
@@ -140,21 +151,24 @@ export default function SignUpPage() {
                           }}
                         />
                         {isCheckingUsername && (
-                          <Loader2 className="absolute right-3.5 top-3.5 animate-spin h-5 w-5 text-gray-400" />
+                          <Loader2 className="absolute right-4 top-4 animate-spin h-4 w-4 text-indigo-400" />
                         )}
                       </div>
                     </FormControl>
-                    {!isCheckingUsername && usernameMessage && (
-                      <p
-                        className={`text-xs pl-1 ${usernameMessage === "Username is available"
-                          ? "text-green-500"
-                          : "text-red-500"
-                          }`}
-                      >
-                        {usernameMessage}
-                      </p>
-                    )}
-                    <FormMessage className="text-xs" />
+                    
+                    {/* FIXED HEIGHT CONTAINER TO PREVENT ZOOM/JUMP */}
+                    <div className="h-6 mt-1 ml-1 overflow-hidden">
+                        {!isCheckingUsername && usernameMessage && (
+                            <p className={`text-[10px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-top-1 duration-200 ${
+                                usernameMessage === "Username is available"
+                                ? "text-emerald-500"
+                                : "text-rose-500"
+                            }`}>
+                                {usernameMessage}
+                            </p>
+                        )}
+                    </div>
+                    <FormMessage className="text-[10px] font-bold text-rose-500 uppercase tracking-widest" />
                   </FormItem>
                 )}
               />
@@ -167,15 +181,15 @@ export default function SignUpPage() {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400" />
+                        <Mail className="absolute left-4 top-4 h-4 w-4 text-slate-400" />
                         <Input
-                          placeholder="Enter your email"
-                          className="pl-12 h-12 rounded-xl border border-gray-200 bg-white shadow-sm focus-visible:ring-[#1A237E]"
+                          placeholder="Email address"
+                          className="pl-12 h-12 rounded-2xl border-slate-100 bg-white focus-visible:ring-indigo-600 text-sm font-medium"
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage className="text-[10px] font-bold text-rose-500 uppercase tracking-widest" />
                   </FormItem>
                 )}
               />
@@ -188,16 +202,16 @@ export default function SignUpPage() {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400" />
+                        <Lock className="absolute left-4 top-4 h-4 w-4 text-slate-400" />
                         <Input
                           type="password"
-                          placeholder="Enter your password"
-                          className="pl-12 h-12 rounded-xl border border-gray-200 bg-white shadow-sm focus-visible:ring-[#1A237E]"
+                          placeholder="Secure password"
+                          className="pl-12 h-12 rounded-2xl border-slate-100 bg-white focus-visible:ring-indigo-600 text-sm font-medium"
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage className="text-[10px] font-bold text-rose-500 uppercase tracking-widest" />
                   </FormItem>
                 )}
               />
@@ -205,16 +219,16 @@ export default function SignUpPage() {
               <div className="pt-4">
                 <Button
                   type="submit"
-                  className="w-full h-12 rounded-xl bg-[#2442AD] hover:bg-[#1A237E] text-white font-medium text-base shadow-md transition-all"
+                  className="w-full h-14 rounded-2xl bg-slate-950 hover:bg-black text-white font-bold text-sm shadow-xl shadow-slate-200 transition-all"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Please wait
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Registering Account...
                     </>
                   ) : (
-                    "Sign Up"
+                    "Register Now"
                   )}
                 </Button>
               </div>
@@ -222,14 +236,14 @@ export default function SignUpPage() {
           </Form>
 
           {/* LOGIN LINK */}
-          <div className="mt-8">
-            <p className="text-center text-xs text-gray-500">
+          <div className="mt-12">
+            <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
               Already have an account?{" "}
               <Link
                 href="/sign-in"
-                className="font-medium text-[#1A237E] hover:underline"
+                className="text-indigo-600 hover:text-indigo-700 ml-2"
               >
-                Sign In Now
+                Sign In
               </Link>
             </p>
           </div>

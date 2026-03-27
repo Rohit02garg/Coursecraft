@@ -143,22 +143,22 @@ export default function LearnPage() {
         <div className="flex flex-col md:flex-row min-h-screen bg-slate-900 text-white font-sans">
 
             {/* MOBILE TOP HEADER - Only visible on small screens */}
-            <div className="md:hidden flex items-center justify-between px-4 h-16 bg-slate-800 border-b border-slate-700 sticky top-0 z-[60] w-full">
-                <div className="flex items-center gap-3 shrink-0">
+            <div className="md:hidden flex items-center justify-between px-4 h-14 bg-slate-900 border-b border-slate-800 sticky top-0 z-[60] w-full">
+                <div className="flex items-center gap-1 shrink-0">
                     <button
                         onClick={() => setIsMobileMenuOpen(true)}
-                        className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+                        className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
                     >
-                        <Menu className="h-6 w-6" />
+                        <Menu className="h-5 w-5" />
                     </button>
-                    <Link href="/dashboard" className="p-2 hover:bg-slate-700 rounded-lg transition-colors">
-                        <ChevronLeft className="h-5 w-5" />
+                    <Link href="/dashboard" className="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+                        <ChevronLeft className="h-5 w-5 text-slate-400" />
                     </Link>
                 </div>
-                <h2 className="font-bold text-sm truncate px-4 flex-1 text-center">
+                <h2 className="font-bold text-xs truncate px-4 flex-1 text-center text-slate-300 uppercase tracking-widest">
                     {course.title}
                 </h2>
-                <div className="w-10"></div> {/* Spacer to keep title centered */}
+                <div className="w-10"></div>
             </div>
 
             {/* MOBILE DRAWER OVERLAY & MENU */}
@@ -233,23 +233,23 @@ export default function LearnPage() {
             <aside className="hidden md:flex flex-col w-72 bg-slate-800 border-r border-slate-700 h-screen sticky top-0 overflow-y-auto shrink-0">
 
                 {/* Header */}
-                <div className="p-5 border-b border-slate-700">
-                    <Link href="/dashboard">
-                        <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white mb-3 -ml-2 rounded-full">
-                            <ChevronLeft className="h-4 w-4 mr-1" /> Dashboard
-                        </Button>
+                <div className="p-6 border-b border-slate-800">
+                    <Link href="/dashboard" className="inline-block mb-6">
+                        <button className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white flex items-center transition-colors">
+                            <ChevronLeft className="h-3 w-3 mr-1" /> Back
+                        </button>
                     </Link>
-                    <h2 className="font-bold text-white text-base line-clamp-2">{course.title}</h2>
+                    <h2 className="font-bold text-white text-base leading-tight mb-4">{course.title}</h2>
 
                     {/* Progress Bar */}
-                    <div className="mt-3">
-                        <div className="flex justify-between text-xs text-slate-400 mb-1.5">
-                            <span>{completedChapters.length}/{course.chapters.length} completed</span>
-                            <span className="font-bold text-emerald-400">{progressPercent}%</span>
+                    <div className="mt-6">
+                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
+                            <span>Progress</span>
+                            <span className="text-indigo-400">{progressPercent}%</span>
                         </div>
-                        <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                        <div className="h-1 bg-slate-900 rounded-full overflow-hidden">
                             <div
-                                className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                                className="h-full bg-indigo-500 rounded-full transition-all duration-700"
                                 style={{ width: `${progressPercent}%` }}
                             />
                         </div>
@@ -257,7 +257,7 @@ export default function LearnPage() {
                 </div>
 
                 {/* Chapter List */}
-                <nav className="flex-1 p-3 space-y-1">
+                <nav className="flex-1 p-4 space-y-1">
                     {course.chapters.map((chapter, index) => {
                         const isCompleted = completedChapters.includes(chapter._id)
                         const isActive = activeChapter?._id === chapter._id
@@ -267,18 +267,16 @@ export default function LearnPage() {
                                 key={chapter._id}
                                 onClick={() => {
                                     setActiveChapter(chapter)
-                                    // Desktop pe menu band karne ki zaroorat nahi
                                 }}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200
+                                className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-left transition-all duration-200
                                     ${isActive
-                                        ? "bg-white/10 text-white font-semibold"
-                                        : "text-slate-400 hover:bg-white/5 hover:text-white"
+                                        ? "bg-indigo-600/10 text-indigo-400 font-bold"
+                                        : "text-slate-500 hover:bg-white/5 hover:text-white"
                                     }`}
                             >
-                                {/* Completed/incomplete icon */}
                                 {isCompleted
-                                    ? <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
-                                    : <Circle className="h-5 w-5 text-slate-600 shrink-0" />
+                                    ? <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                                    : <Circle className="h-4 w-4 text-slate-800 shrink-0" />
                                 }
                                 <span className="text-sm line-clamp-2">
                                     {index + 1}. {chapter.title}
@@ -295,9 +293,8 @@ export default function LearnPage() {
                 {/* Video Player */}
                 <div className="w-full bg-black aspect-video">
                     {activeChapter?.videoUrl ? (
-                        // YouTube embed - user site pe hi rahega!
                         <iframe
-                            key={activeChapter._id} // key change hone pe iframe reload hoga
+                            key={activeChapter._id}
                             src={activeChapter.videoUrl}
                             className="w-full h-full"
                             allowFullScreen
@@ -315,10 +312,10 @@ export default function LearnPage() {
                 <div className="p-6 md:p-10 max-w-4xl">
 
                     {/* Chapter Title + Mark Complete Button */}
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
                         <div>
-                            <p className="text-slate-400 text-sm mb-1">Now Playing</p>
-                            <h1 className="text-2xl font-extrabold text-white">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-3">Chapter {course.chapters.findIndex(c => c._id === activeChapter?._id) + 1}</p>
+                            <h1 className="text-2xl font-bold text-white tracking-tight">
                                 {activeChapter?.title}
                             </h1>
                         </div>
@@ -326,17 +323,17 @@ export default function LearnPage() {
                         <Button
                             onClick={handleMarkComplete}
                             disabled={isMarkingComplete}
-                            className={`shrink-0 rounded-xl h-11 px-6 font-semibold transition-all ${isActiveChapterCompleted
-                                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                                : "bg-white hover:bg-slate-100 text-slate-900"
+                            className={`shrink-0 rounded-2xl h-12 px-8 font-bold transition-all shadow-lg ${isActiveChapterCompleted
+                                ? "bg-emerald-600/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-600/20"
+                                : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/10"
                                 }`}
                         >
                             {isMarkingComplete ? (
                                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
                             ) : isActiveChapterCompleted ? (
-                                <><CheckCircle2 className="mr-2 h-4 w-4" /> Completed!</>
+                                <><CheckCircle2 className="mr-2 h-4 w-4" /> Lesson Complete</>
                             ) : (
-                                "Mark as Complete"
+                                "Finish Chapter"
                             )}
                         </Button>
                     </div>

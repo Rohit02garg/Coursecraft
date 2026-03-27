@@ -40,35 +40,35 @@ export default async function Home() {
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
 
       {/* HEADER NAVBAR */}
-      <header className="px-6 lg:px-14 h-20 flex items-center justify-between border-b bg-white shadow-sm sticky top-0 z-50">
+      <header className="px-6 lg:px-14 h-16 flex items-center justify-between border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <div className="bg-[#1A237E] p-2 rounded-xl">
-            <GraduationCap className="h-6 w-6 text-white" />
+          <div className="bg-indigo-600 p-1.5 rounded-lg">
+            <GraduationCap className="h-5 w-5 text-white" />
           </div>
-          <span className="font-extrabold text-2xl text-[#1A237E] tracking-tight">
+          <span className="font-bold text-xl text-slate-900 tracking-tight">
             CourseCraft
           </span>
         </div>
 
         {/* Navigation - Conditionally Rendered based on Auth! */}
-        <nav className="flex items-center gap-3 sm:gap-6">
-          <Link href="#courses-section" className="hidden sm:block text-sm font-semibold text-gray-600 hover:text-[#1A237E] transition-colors">
-            Explore Courses
+        <nav className="flex items-center gap-3 sm:gap-8">
+          <Link href="#courses-section" className="hidden sm:block text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-indigo-600 transition-colors">
+            Explore
           </Link>
 
           {session ? (
             <Link href="/dashboard">
-              <Button className="bg-[#1A237E] hover:bg-[#2442AD] text-white rounded-full px-5 py-2 sm:px-6 shadow-md transition-all">
-                Go to Dashboard
+              <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-5 py-2 shadow-sm transition-all text-xs font-bold">
+                Dashboard
               </Button>
             </Link>
           ) : (
             <>
-              <Link href="/sign-in" className="text-sm font-semibold text-gray-600 hover:text-[#1A237E] transition-colors">
-                Sign In
+              <Link href="/sign-in" className="text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-indigo-600 transition-colors">
+                Log In
               </Link>
               <Link href="/sign-up">
-                <Button className="bg-[#1A237E] hover:bg-[#2442AD] text-white rounded-full px-5 py-2 sm:px-6 shadow-md transition-all">
+                <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-5 py-2 shadow-sm transition-all text-xs font-bold">
                   Get Started
                 </Button>
               </Link>
@@ -78,23 +78,22 @@ export default async function Home() {
       </header>
 
       {/* HERO SECTION */}
-      <main className="flex-1 overflow-hidden relative">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-
-        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 py-24 sm:py-32">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-7xl mb-8">
-            Master new skills with <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1A237E] to-blue-500">
-              CourseCraft
-            </span>
+      <main className="flex-1 overflow-hidden relative bg-white">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 py-28 sm:py-36">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-100 mb-8">
+            <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Modern Learning Platform</span>
+          </div>
+          <h1 className="text-5xl font-bold tracking-tight sm:text-7xl mb-10 text-slate-900 leading-[1.1]">
+            Learn anything. <br className="hidden sm:block" />
+            Teach everything.
           </h1>
-          <p className="max-w-2xl text-lg sm:text-xl text-gray-600 mb-10 leading-relaxed font-medium">
-            Join thousands of students learning from the best instructors. Explore interactive courses, track your progress, and achieve your goals today.
+          <p className="max-w-2xl text-lg sm:text-xl text-slate-500 mb-12 leading-relaxed font-medium">
+            Join thousands achievement goals with premium project-based courses for the modern era.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="#courses-section">
-              <Button size="lg" className="w-full h-14 px-8 text-lg font-semibold bg-[#2442AD] hover:bg-[#1A237E] rounded-full shadow-lg transition-all">
+              <Button size="lg" className="w-full h-16 px-10 text-lg font-bold bg-slate-900 hover:bg-black text-white rounded-2xl shadow-sm transition-all">
                 Explore The Catalog
               </Button>
             </Link>
@@ -107,7 +106,7 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-4">
             <div>
-              <h2 className="text-3xl font-extrabold tracking-tight text-[#1A237E] sm:text-4xl">
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                 Featured Courses
               </h2>
               <p className="mt-4 text-lg text-gray-500 font-medium">

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import axios, { AxiosError } from "axios"
-import { Loader2, ChevronLeft, PlusCircle, Trash2, Globe } from "lucide-react"
+import { Loader2, ChevronLeft, PlusCircle, Trash2, Globe, Settings2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
@@ -42,12 +42,25 @@ export default function CourseEditorPage() {
     const [isAddingChapter, setIsAddingChapter] = useState(false)
     const [showChapterForm, setShowChapterForm] = useState(false)
 
+    // Course Edit form state
+    const [showEditForm, setShowEditForm] = useState(false)
+    const [editTitle, setEditTitle] = useState("")
+    const [editDescription, setEditDescription] = useState("")
+    const [editThumbnail, setEditThumbnail] = useState("")
+    const [isUpdatingCourse, setIsUpdatingCourse] = useState(false)
+
     // Course fetch karo
     useEffect(() => {
         const fetchCourse = async () => {
             try {
                 const response = await axios.get(`/api/courses/${courseId}`)
-                setCourse(response.data.course)
+                const fetchedCourse = response.data.course
+                setCourse(fetchedCourse)
+
+                // Populate edit states so it's ready for editing
+                setEditTitle(fetchedCourse.title)
+                setEditDescription(fetchedCourse.description)
+                setEditThumbnail(fetchedCourse.thumbnail)
             } catch (error) {
                 console.error("Error fetching course", error)
                 toast.error("Error", { description: "Course load nahi hua" })
@@ -124,6 +137,59 @@ export default function CourseEditorPage() {
         }
     }
 
+    // Toggle Publish State (Unpublish)
+    const handleUnpublish = async () => {
+        setIsPublishing(true)
+        try {
+            await axios.patch(`/api/courses/${courseId}`, {
+                isPublished: false
+            })
+            toast.success("Course Unpublished", { description: "Is ab catalog se hata diya gaya hai." })
+            setCourse(prev => prev ? { ...prev, isPublished: false } : null)
+        } catch (error) {
+            toast.error("Action Failed", { description: "Unpublish nahi hua" })
+        } finally {
+            setIsPublishing(false)
+        }
+    }
+
+    // Delete entire course
+    const handleDeleteCourse = async () => {
+        if (!window.confirm("ARE YOU SURE? This will permanently delete this course and all its chapters!")) return
+
+        try {
+            await axios.delete(`/api/courses/${courseId}`)
+            toast.success("Course Deleted Forever")
+            router.push("/instructor")
+        } catch (error) {
+            toast.error("Error", { description: "Delete karne mein error aaya" })
+        }
+    }
+
+    // Course update handler
+    const handleUpdateCourse = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setIsUpdatingCourse(true)
+        try {
+            const response = await axios.patch(`/api/courses/${courseId}`, {
+                title: editTitle,
+                description: editDescription,
+                thumbnail: editThumbnail
+            })
+
+            toast.success("Course Updated! ✨")
+            setCourse(response.data.course)
+            setShowEditForm(false)
+        } catch (error) {
+            const axiosError = error as AxiosError<any>
+            toast.error("Update Failed", {
+                description: axiosError.response?.data.message ?? "Update nahi hua"
+            })
+        } finally {
+            setIsUpdatingCourse(false)
+        }
+    }
+
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -147,43 +213,133 @@ export default function CourseEditorPage() {
                             </Button>
                         </Link>
                         <div className="min-w-0">
-                            <h1 className="font-extrabold text-[#1A237E] truncate text-xl">{course.title}</h1>
-                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${course.isPublished ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"
-                                }`}>
-                                {course.isPublished ? "Published" : "Draft"}
-                            </span>
+                            <h1 className="font-bold text-slate-900 truncate text-lg tracking-tight">{course.title}</h1>
+                            <div className="flex items-center gap-2 mt-1">
+                                <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${course.isPublished ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
+                                    }`}>
+                                    {course.isPublished ? "Live" : "Draft"}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Publish Button - sirf tab dikhao jab published nahi hai */}
-                    {!course.isPublished && (
+                    {/* Edit Button */}
+                    <div className="flex gap-2">
                         <Button
-                            onClick={handlePublish}
-                            disabled={isPublishing || course.chapters.length === 0}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md shrink-0"
+                            onClick={() => setShowEditForm(!showEditForm)}
+                            variant="ghost"
+                            className="rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-indigo-50/50"
                         >
-                            {isPublishing
-                                ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Publishing...</>
-                                : <><Globe className="mr-2 h-4 w-4" /> Publish Course</>
-                            }
+                            <Settings2 className="mr-2 h-4 w-4" />
+                            {showEditForm ? "Cancel" : "Edit Info"}
                         </Button>
-                    )}
+
+                        {/* Unpublish Button - sirf tab dikhao jab published hai */}
+                        {course.isPublished && (
+                            <Button
+                                onClick={handleUnpublish}
+                                disabled={isPublishing}
+                                variant="ghost"
+                                className="text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl px-5 h-10 font-bold text-xs shrink-0"
+                            >
+                                {isPublishing
+                                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> ...</>
+                                    : <><Globe className="mr-2 h-4 w-4" /> Unpublish</>
+                                }
+                            </Button>
+                        )}
+
+                        {/* Publish Button */}
+                        {!course.isPublished && (
+                            <Button
+                                onClick={handlePublish}
+                                disabled={isPublishing || course.chapters.length === 0}
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-10 px-6 font-bold text-xs shadow-sm shrink-0"
+                            >
+                                {isPublishing
+                                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> ...</>
+                                    : <><Globe className="mr-2 h-4 w-4" /> Publish</>
+                                }
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
 
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
 
+                {/* EDIT COURSE DETAILS FORM */}
+                {showEditForm && (
+                    <div className="bg-white rounded-3xl border border-slate-100 p-8 animate-in zoom-in-95 duration-200">
+                        <h2 className="text-xl font-bold text-slate-900 mb-8 flex items-center gap-2">
+                            <Settings2 className="h-5 w-5 text-indigo-600" /> Update Metadata
+                        </h2>
+                        <form onSubmit={handleUpdateCourse} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Course Title</label>
+                                    <Input
+                                        value={editTitle}
+                                        onChange={e => setEditTitle(e.target.value)}
+                                        className="h-12 rounded-xl border-slate-200 focus:ring-[#1A237E]"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Thumbnail URL</label>
+                                    <Input
+                                        value={editThumbnail}
+                                        onChange={e => setEditThumbnail(e.target.value)}
+                                        className="h-12 rounded-xl border-slate-200 focus:ring-[#1A237E]"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Description</label>
+                                <textarea
+                                    value={editDescription}
+                                    onChange={e => setEditDescription(e.target.value)}
+                                    rows={4}
+                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A237E] resize-none"
+                                    required
+                                />
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    onClick={() => setShowEditForm(false)}
+                                    className="rounded-xl text-slate-500"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    disabled={isUpdatingCourse}
+                                    className="bg-[#1A237E] hover:bg-[#2442AD] text-white rounded-xl px-10 h-12 shadow-lg"
+                                >
+                                    {isUpdatingCourse
+                                        ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving Changes...</>
+                                        : "Save Changes"
+                                    }
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                )}
+
                 {/* CHAPTERS SECTION */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                    <div className="flex items-center justify-between mb-6">
+                <div className="bg-white rounded-3xl border border-slate-100 p-8">
+                    <div className="flex items-center justify-between mb-8">
                         <h2 className="text-xl font-bold text-slate-900">
-                            Chapters ({course.chapters.length})
+                            Curriculum <span className="text-slate-400 font-medium ml-2">({course.chapters.length})</span>
                         </h2>
                         <Button
                             onClick={() => setShowChapterForm(!showChapterForm)}
-                            variant="outline"
-                            size="sm"
-                            className="rounded-xl border-slate-200 hover:border-[#1A237E] hover:text-[#1A237E]"
+                            className="rounded-xl bg-slate-900 hover:bg-black text-white px-6 font-bold text-xs h-10 shadow-sm"
                         >
                             <PlusCircle className="mr-2 h-4 w-4" />
                             Add Chapter
@@ -192,62 +348,62 @@ export default function CourseEditorPage() {
 
                     {/* Chapter Add Form - toggle hota hai */}
                     {showChapterForm && (
-                        <form onSubmit={handleAddChapter} className="bg-slate-50 rounded-xl p-5 mb-6 space-y-4 border border-slate-200">
-                            <h3 className="font-semibold text-slate-700">New Chapter</h3>
+                        <form onSubmit={handleAddChapter} className="bg-slate-50 rounded-2xl p-6 mb-8 space-y-4 border border-slate-100">
+                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-widest">New Chapter</h3>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-semibold text-slate-600">Chapter Title *</label>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Title</label>
                                 <Input
                                     placeholder="e.g. Introduction to Variables"
                                     value={chapterTitle}
                                     onChange={e => setChapterTitle(e.target.value)}
-                                    className="h-10 rounded-lg border-slate-200 focus-visible:ring-[#1A237E]"
+                                    className="h-11 rounded-xl border-slate-100 focus-visible:ring-indigo-600 bg-white"
                                     required
                                 />
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-semibold text-slate-600">YouTube Embed URL *</label>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Video URL</label>
                                 <Input
                                     placeholder="https://www.youtube.com/embed/VIDEO_ID"
                                     value={chapterVideo}
                                     onChange={e => setChapterVideo(e.target.value)}
-                                    className="h-10 rounded-lg border-slate-200 focus-visible:ring-[#1A237E]"
+                                    className="h-11 rounded-xl border-slate-100 focus-visible:ring-indigo-600 bg-white"
                                     required
                                 />
-                                <p className="text-xs text-slate-400">
-                                    ⚠️ /embed/ URL use karo, /watch?v= nahi!
+                                <p className="text-[10px] text-slate-400 mt-1">
+                                    Use the YouTube /embed/ URL format.
                                 </p>
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-semibold text-slate-600">Chapter Notes *</label>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Notes</label>
                                 <textarea
-                                    placeholder="Chapter ke baare mein kuch likho..."
+                                    placeholder="Chapter notes..."
                                     value={chapterContent}
                                     onChange={e => setChapterContent(e.target.value)}
-                                    rows={3}
+                                    rows={4}
                                     required
-                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A237E] resize-none"
+                                    className="w-full px-4 py-3 rounded-xl border border-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 bg-white resize-none"
                                 />
                             </div>
 
-                            <div className="flex gap-3">
+                            <div className="flex gap-3 pt-2">
                                 <Button
                                     type="submit"
                                     disabled={isAddingChapter}
-                                    className="bg-[#1A237E] hover:bg-[#2442AD] text-white rounded-lg"
+                                    className="bg-slate-900 hover:bg-black text-white rounded-xl px-6 h-11 font-bold text-xs"
                                 >
                                     {isAddingChapter
                                         ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...</>
-                                        : "Add Chapter"
+                                        : "Create Chapter"
                                     }
                                 </Button>
                                 <Button
                                     type="button"
                                     variant="ghost"
                                     onClick={() => setShowChapterForm(false)}
-                                    className="rounded-lg text-slate-500"
+                                    className="rounded-xl text-slate-400 h-11"
                                 >
                                     Cancel
                                 </Button>
@@ -257,21 +413,21 @@ export default function CourseEditorPage() {
 
                     {/* Chapters List */}
                     {course.chapters.length > 0 ? (
-                        <div className="space-y-3">
+                        <div className="grid grid-cols-1 gap-3">
                             {course.chapters.map((chapter, index) => (
                                 <div
                                     key={chapter._id}
-                                    className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100"
+                                    className="flex items-center gap-5 p-4 bg-slate-50/50 rounded-2xl border border-slate-50 group hover:border-indigo-100 transition-all"
                                 >
-                                    <div className="h-8 w-8 bg-[#1A237E]/10 rounded-full flex items-center justify-center text-[#1A237E] font-bold text-sm shrink-0">
+                                    <div className="h-8 w-8 bg-white border border-slate-100 rounded-lg flex items-center justify-center text-slate-400 font-bold text-[10px] shrink-0">
                                         {index + 1}
                                     </div>
-                                    <p className="flex-1 font-medium text-slate-800 text-sm">{chapter.title}</p>
+                                    <p className="flex-1 font-bold text-slate-900 text-sm truncate group-hover:text-indigo-600 transition-colors">{chapter.title}</p>
                                     <Button
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => handleDeleteChapter(chapter._id)}
-                                        className="text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg shrink-0"
+                                        className="text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl shrink-0 h-10 w-10 p-0"
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
@@ -279,9 +435,11 @@ export default function CourseEditorPage() {
                             ))}
                         </div>
                     ) : (
-                        <p className="text-center text-slate-400 py-8 text-sm">
-                            Abhi koi chapter nahi hai. "Add Chapter" pe click karo!
-                        </p>
+                        <div className="text-center py-10">
+                            <p className="text-sm text-slate-400 font-medium italic">
+                                No chapters yet. Click "Add Chapter" to build your curriculum.
+                            </p>
+                        </div>
                     )}
 
                     {/* Publish hint */}
@@ -290,6 +448,23 @@ export default function CourseEditorPage() {
                             ⚠️ Publish karne ke liye kam se kam 1 chapter zaroori hai
                         </p>
                     )}
+                </div>
+
+                {/* DANGER ZONE - Refined & Subtle */}
+                <div className="mt-20 pt-12 border-t border-slate-100">
+                    <div className="bg-white border border-slate-100 rounded-[32px] p-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div className="text-center md:text-left">
+                            <h2 className="text-lg font-bold text-slate-900 mb-2">Danger Zone</h2>
+                            <p className="text-sm text-slate-400 font-medium max-w-md">Remove this course and all its data. This action is irreversible.</p>
+                        </div>
+                        <Button
+                            onClick={handleDeleteCourse}
+                            variant="ghost"
+                            className="rounded-2xl px-10 h-14 font-bold text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all shrink-0"
+                        >
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete Course
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

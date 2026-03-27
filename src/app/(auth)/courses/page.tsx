@@ -19,33 +19,33 @@ export default async function CoursesPage() {
         <div className="min-h-screen bg-slate-50 font-sans">
 
             {/* PAGE HEADER */}
-            <div className="bg-white border-b border-slate-200 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center gap-4">
-                    <Link href="/">
-                        <Button variant="ghost" size="sm" className="text-slate-500 hover:text-[#1A237E] rounded-full">
-                            <ChevronLeft className="h-4 w-4 mr-1" />
-                            Home
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-[#1A237E]">
-                            Explore All Courses
-                        </h1>
-                        <p className="text-slate-500 mt-1 font-medium">
-                            {courses.length} {courses.length === 1 ? "course" : "courses"} available
-                        </p>
+            <div className="bg-white border-b border-slate-100 shadow-none">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                        <Link href="/dashboard">
+                            <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 flex items-center transition-colors">
+                                <ChevronLeft className="h-3 w-3 mr-1" /> Dashboard
+                            </button>
+                        </Link>
+                        <div className="h-8 w-px bg-slate-100 hidden sm:block"></div>
+                        <div>
+                            <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-none">
+                                Explore Courses
+                            </h1>
+                            <p className="text-[10px] font-black text-slate-400 mt-2 uppercase tracking-widest leading-none">
+                                {courses.length} {courses.length === 1 ? "course" : "courses"} available
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* COURSES GRID */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
                 {courses.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
                         {courses.map((course: any) => {
-
-                            // Instructor safely extract karo - populate ke baad object ho sakta hai
                             const instId = course.instructor
                             const instructorName = typeof instId === 'object' && instId !== null
                                 ? (instId.username || instId.email || 'Instructor')
@@ -65,20 +65,14 @@ export default async function CoursesPage() {
                         })}
                     </div>
                 ) : (
-                    // Empty State - agar koi course published nahi hai
-                    <div className="text-center py-28 bg-white rounded-3xl border-2 border-dashed border-slate-200 shadow-sm">
-                        <div className="h-24 w-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <BookOpen className="h-12 w-12 text-[#1A237E]" />
+                    <div className="text-center py-32 bg-white rounded-[40px] border border-slate-100">
+                        <div className="h-20 w-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <BookOpen className="h-10 w-10 text-slate-200" />
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-900">
-                            No courses available yet
-                        </h2>
-                        <p className="text-slate-500 mt-3 text-lg">
-                            Instructors are working on amazing content. Check back soon!
-                        </p>
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Catalog is empty</h2>
+                        <p className="text-slate-500 mt-3 font-medium">Check back soon for new premium courses.</p>
                     </div>
                 )}
-
             </div>
         </div>
     )
