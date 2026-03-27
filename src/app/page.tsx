@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
 import { GraduationCap, BookOpen, ChevronRight } from "lucide-react";
 
 // For auth detection
@@ -16,8 +17,13 @@ import CourseCard from "@/components/ui/CourseCard";
 // This makes it a powerful Server Component. Wait until you see how fast this fetches!
 
 export default async function Home() {
-  // 1. Fetch Session (To conditionally show "Dashboard" vs "Sign In")
+  // 1. Fetch Session
   const session = await auth();
+
+  // Redirect to dashboard if already logged in!
+  if (session) {
+    redirect("/dashboard");
+  }
 
   // 2. Fetch Courses from Database (Server-side rendering!)
   await dbConnect();

@@ -32,7 +32,7 @@ export async function POST(
             )
         }
 
-        const courseId = await params
+        const { courseId } = await params
 
         // const user = { _id: "695ffe1d137d1560d30a37fd" };
         // const courseId = "6960ed8e4efe3ef7c56ee58b"

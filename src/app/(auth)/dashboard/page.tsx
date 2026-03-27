@@ -1,10 +1,10 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BookOpen, Compass, User as UserIcon, PlayCircle, PlusCircle, Search } from "lucide-react";
+import { BookOpen, Compass, PlayCircle, PlusCircle, Search, LogOut, Monitor, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ export default function DashboardPage() {
     // State to hold real data!
     const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
     const [isLoadingData, setIsLoadingData] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");  // Issue #6 - search state
 
     useEffect(() => {
         const fetchEnrollments = async () => {
@@ -44,6 +45,12 @@ export default function DashboardPage() {
 
         fetchEnrollments();
     }, [status]);
+
+    // Filter logic outside JSX for better readability and to fix name error
+    const filteredCourses = enrolledCourses.filter(c =>
+        c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.instructor.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     if (status === "loading" || (status === "authenticated" && isLoadingData)) {
         return (
@@ -85,13 +92,31 @@ export default function DashboardPage() {
                     </Link>
                 </nav>
 
-                <div className="p-4 border-t border-slate-100">
-                    <Link href="/become-instructor">
-                        <Button variant="outline" className="w-full justify-start text-[#1A237E] border-slate-300 hover:border-[#1A237E] hover:bg-blue-50 transition-colors shadow-sm">
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Teach on CourseCraft
-                        </Button>
-                    </Link>
+                <div className="p-4 border-t border-slate-100 space-y-2">
+                    {/* Issue #3 - Role-based button */}
+                    {session?.user?.role === "INSTRUCTOR" ? (
+                        <Link href="/instructor">
+                            <Button variant="outline" className="w-full justify-start text-[#1A237E] border-slate-300 hover:border-[#1A237E] hover:bg-blue-50 transition-colors shadow-sm">
+                                <Monitor className="mr-2 h-4 w-4" />
+                                Instructor Studio
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Link href="/become-instructor">
+                            <Button variant="outline" className="w-full justify-start text-[#1A237E] border-slate-300 hover:border-[#1A237E] hover:bg-blue-50 transition-colors shadow-sm">
+                                <PlusCircle className="mr-2 h-4 w-4" />
+                                Teach on CourseCraft
+                            </Button>
+                        </Link>
+                    )}
+                    <Button
+                        onClick={() => signOut({ callbackUrl: "/" })}
+                        variant="outline"
+                        className="w-full justify-start text-red-500 border-red-200 hover:bg-red-50 hover:border-red-400 transition-colors"
+                    >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign Out
+                    </Button>
                 </div>
             </aside>
 
@@ -100,7 +125,12 @@ export default function DashboardPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div className="relative w-full max-w-md">
                         <Search className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
-                        <Input placeholder="Search your courses..." className="pl-10 h-11 bg-white border-slate-200 rounded-full shadow-sm focus-visible:ring-[#1A237E]" />
+                        <Input
+                            placeholder="Search your courses..."
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            className="pl-10 h-11 bg-white border-slate-200 rounded-full shadow-sm focus-visible:ring-[#1A237E]"
+                        />
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -135,9 +165,9 @@ export default function DashboardPage() {
                 </header>
 
                 {/* ENROLLED COURSES GRID */}
-                {enrolledCourses.length > 0 ? (
+                {filteredCourses.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {enrolledCourses.map((course) => (
+                        {filteredCourses.map((course) => (
                             <div key={course.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300 group flex flex-col">
                                 <div className="h-44 bg-slate-200 relative overflow-hidden shrink-0">
                                     <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -167,6 +197,12 @@ export default function DashboardPage() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                ) : searchQuery ? (
+                    <div className="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                        <Search className="h-12 w-12 text-slate-300 mb-4" />
+                        <h3 className="text-xl font-bold text-slate-900">No courses found</h3>
+                        <p className="text-slate-500 mt-2">Try searching for something else.</p>
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border-2 border-dashed border-slate-200 shadow-sm">
