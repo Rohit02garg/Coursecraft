@@ -1,9 +1,11 @@
 import dbConnect from "@/lib/dbConnect";
 import CourseModel from "@/model/Course";
+import "@/model/User"; // Ensures the User model is registered for populate("instructor") to work
 import Link from "next/link";
-import { BookOpen, ChevronLeft } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CourseCard from "@/components/ui/CourseCard";
+import BackButton from "@/components/ui/BackButton";
 
 export default async function CoursesPage() {
 
@@ -22,11 +24,7 @@ export default async function CoursesPage() {
             <div className="bg-white border-b border-slate-100 shadow-none">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <Link href="/dashboard">
-                            <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 flex items-center transition-colors">
-                                <ChevronLeft className="h-3 w-3 mr-1" /> Dashboard
-                            </button>
-                        </Link>
+                        <BackButton fallbackHref="/dashboard" label="Dashboard" />
                         <div className="h-8 w-px bg-slate-100 hidden sm:block"></div>
                         <div>
                             <h1 className="text-xl font-bold tracking-tight text-slate-900 leading-none">

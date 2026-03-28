@@ -2,8 +2,9 @@
 
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import { User, Mail, Shield, ChevronLeft, Calendar, BookOpen } from "lucide-react"
+import { User, Mail, Shield, Calendar, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import BackButton from "@/components/ui/BackButton"
 
 export default function ProfilePage() {
     const { data: session } = useSession()
@@ -13,11 +14,7 @@ export default function ProfilePage() {
         <div className="min-h-screen bg-slate-50 font-sans p-6 md:p-14">
             <div className="max-w-4xl mx-auto">
                 {/* Back Button */}
-                <Link href="/dashboard" className="inline-block mb-10 ml-2">
-                    <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 flex items-center transition-colors">
-                        <ChevronLeft className="h-3 w-3 mr-1" /> Dashboard
-                    </button>
-                </Link>
+                <BackButton fallbackHref="/dashboard" label="Dashboard" className="mb-10 ml-2" />
 
                 <div className="bg-white rounded-[40px] border border-slate-100 overflow-hidden shadow-sm">
                     {/* Header/Cover Color */}

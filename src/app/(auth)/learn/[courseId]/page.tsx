@@ -7,6 +7,7 @@ import { Loader2, CheckCircle2, Circle, ChevronLeft, PlayCircle, Menu, X } from 
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import Link from "next/link"
+import BackButton from "@/components/ui/BackButton"
 
 interface Chapter {
     _id: string
@@ -151,9 +152,7 @@ export default function LearnPage() {
                     >
                         <Menu className="h-5 w-5" />
                     </button>
-                    <Link href="/dashboard" className="p-2 hover:bg-slate-800 rounded-lg transition-colors">
-                        <ChevronLeft className="h-5 w-5 text-slate-400" />
-                    </Link>
+                    <BackButton fallbackHref="/dashboard" className="p-2" />
                 </div>
                 <h2 className="font-bold text-xs truncate px-4 flex-1 text-center text-slate-300 uppercase tracking-widest">
                     {course.title}
@@ -234,11 +233,7 @@ export default function LearnPage() {
 
                 {/* Header */}
                 <div className="p-6 border-b border-slate-800">
-                    <Link href="/dashboard" className="inline-block mb-6">
-                        <button className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white flex items-center transition-colors">
-                            <ChevronLeft className="h-3 w-3 mr-1" /> Back
-                        </button>
-                    </Link>
+                    <BackButton fallbackHref="/dashboard" className="mb-6" />
                     <h2 className="font-bold text-white text-base leading-tight mb-4">{course.title}</h2>
 
                     {/* Progress Bar */}

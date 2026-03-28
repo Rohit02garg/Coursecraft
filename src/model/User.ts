@@ -23,6 +23,8 @@ const UserSchema: Schema<User> = new Schema({
         type: String,
         required: [true, "email is required"],
         unique: true,
+        lowercase: true,   // always stored as lowercase — emails are case-insensitive
+        trim: true,
         match: [/.+\@.+\..+/, 'please enter a valid email address'],
     },
     password: {

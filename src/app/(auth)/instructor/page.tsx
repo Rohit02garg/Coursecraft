@@ -6,6 +6,7 @@ import Link from "next/link"
 import { PlusCircle, BookOpen, Eye, EyeOff, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import SignOutButton from "@/components/ui/SignOutButton"
+import BackButton from "@/components/ui/BackButton"
 
 export default async function InstructorPage() {
 
@@ -31,6 +32,7 @@ export default async function InstructorPage() {
             <div className="bg-white border-b border-slate-100 shadow-none">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     <div>
+                        <BackButton fallbackHref="/dashboard" label="Dashboard" className="mb-2" />
                         <h1 className="text-2xl font-bold tracking-tight text-slate-900 leading-none">
                             Instructor Studio
                         </h1>

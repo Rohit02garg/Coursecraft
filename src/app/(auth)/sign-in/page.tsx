@@ -6,8 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Loader2, Mail, Lock, ChevronLeft } from "lucide-react";
+import { Loader2, Mail, Lock } from "lucide-react";
 import Link from "next/link";
+import BackButton from "@/components/ui/BackButton";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -97,11 +98,7 @@ export default function SignInPage() {
                 {/* RIGHT SIDE - Form Area */}
                 <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white relative">
                     
-                    <Link href="/" className="absolute top-8 left-8 md:left-16">
-                        <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 flex items-center transition-colors">
-                            <ChevronLeft className="h-3 w-3 mr-1" /> Home
-                        </button>
-                    </Link>
+                    <BackButton fallbackHref="/" label="Home" className="absolute top-8 left-8 md:left-16" />
 
                     <div className="mb-10 mt-4 text-center md:text-left">
                         <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">

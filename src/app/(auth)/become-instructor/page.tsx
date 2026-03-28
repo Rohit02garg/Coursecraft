@@ -5,10 +5,11 @@ import { signOut } from "next-auth/react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import axios, { AxiosError } from "axios"
-import { Loader2, ChevronLeft, BookOpen, Video, Users, BadgeCheck } from "lucide-react"
+import { Loader2, BookOpen, Video, Users, BadgeCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import Link from "next/link"
+import BackButton from "@/components/ui/BackButton"
 
 const perks = [
     {
@@ -76,11 +77,7 @@ export default function BecomeInstructorPage() {
 
             {/* Back Button */}
             <div className="p-6">
-                <Link href="/dashboard">
-                    <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10 rounded-full">
-                        <ChevronLeft className="h-4 w-4 mr-1" /> Back to Dashboard
-                    </Button>
-                </Link>
+                <BackButton fallbackHref="/dashboard" label="Back to Dashboard" className="text-white/70 hover:text-white" />
             </div>
 
             {/* HERO */}

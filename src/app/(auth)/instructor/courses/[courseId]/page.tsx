@@ -7,7 +7,7 @@ import { Loader2, ChevronLeft, PlusCircle, Trash2, Globe, Settings2 } from "luci
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import Link from "next/link"
+import BackButton from "@/components/ui/BackButton"
 
 interface Chapter {
     _id: string
@@ -207,11 +207,7 @@ export default function CourseEditorPage() {
             <div className="bg-white border-b border-slate-200 shadow-sm">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
-                        <Link href="/instructor">
-                            <Button variant="ghost" size="sm" className="rounded-full text-slate-500 hover:text-[#1A237E] shrink-0">
-                                <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                        </Link>
+                        <BackButton fallbackHref="/instructor" variant="ghost" />
                         <div className="min-w-0">
                             <h1 className="font-bold text-slate-900 truncate text-lg tracking-tight">{course.title}</h1>
                             <div className="flex items-center gap-2 mt-1">

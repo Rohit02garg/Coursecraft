@@ -1,10 +1,12 @@
 import dbConnect from "@/lib/dbConnect";
 import CourseModel from "@/model/Course";
+import "@/model/User";
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { BookOpen, ChevronLeft, PlayCircle, User, LayoutList } from "lucide-react"
+import { BookOpen, PlayCircle, User, LayoutList } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import EnrollButton from "@/components/ui/EnrollButton";
+import BackButton from "@/components/ui/BackButton";
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ courseId: string }> }) {
     await dbConnect()
@@ -25,12 +27,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
             {/* BACK BUTTON */}
             <div className="bg-white border-b border-slate-200 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <Link href="/courses">
-                        <Button variant="ghost" size="sm" className="text-slate-500 hover:text-[#1A237E] rounded-full">
-                            <ChevronLeft className="h-4 w-4 mr-1" />
-                            Back to Courses
-                        </Button>
-                    </Link>
+                    <BackButton fallbackHref="/courses" label="Back to Courses" variant="ghost" />
                 </div>
             </div>
 

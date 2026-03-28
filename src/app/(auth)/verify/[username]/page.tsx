@@ -6,8 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios, { AxiosError } from "axios";
 import { useRouter, useParams } from "next/navigation";
-import { Loader2, KeyRound, ChevronLeft } from "lucide-react";
+import { Loader2, KeyRound } from "lucide-react";
 import Link from "next/link";
+import BackButton from "@/components/ui/BackButton";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -62,7 +63,7 @@ export default function VerifyPage() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
       <div className="w-full max-w-5xl bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[680px]">
-        
+
         {/* LEFT SIDE - Premium Subtle Illustration Area */}
         <div className="hidden md:flex md:w-1/2 bg-slate-50 relative items-center justify-center p-12 overflow-hidden border-r border-slate-50">
           <div className="absolute top-12 left-12 w-8 h-8 border border-slate-200 rounded-full opacity-50"></div>
@@ -74,12 +75,12 @@ export default function VerifyPage() {
 
           <div className="z-10 text-center flex flex-col items-center">
             <div className="w-56 h-56 bg-white rounded-[32px] border border-slate-100 flex justify-center items-center shadow-sm mb-8 rotate-3">
-                <div className="p-8 text-center">
-                    <div className="h-12 w-12 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <KeyRound className="h-6 w-6 text-indigo-600" />
-                    </div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">Identity Check<br/>Awaiting Clearance</p>
+              <div className="p-8 text-center">
+                <div className="h-12 w-12 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <KeyRound className="h-6 w-6 text-indigo-600" />
                 </div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">Identity Check<br />Awaiting Clearance</p>
+              </div>
             </div>
             <h2 className="text-xl font-bold text-slate-900 tracking-tight px-10">One last step to unlock your potential.</h2>
           </div>
@@ -87,12 +88,8 @@ export default function VerifyPage() {
 
         {/* RIGHT SIDE - Form Area */}
         <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white relative">
-          
-          <Link href="/sign-up" className="absolute top-8 left-8 md:left-16">
-            <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 flex items-center transition-colors">
-              <ChevronLeft className="h-3 w-3 mr-1" /> Back
-            </button>
-          </Link>
+
+          <BackButton fallbackHref="/sign-up" className="absolute top-8 left-8 md:left-16" />
 
           <div className="mb-10 mt-4 text-center md:text-left">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">
@@ -105,7 +102,7 @@ export default function VerifyPage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              
+
               {/* CODE FIELD */}
               <FormField
                 name="code"
@@ -148,9 +145,9 @@ export default function VerifyPage() {
 
           <div className="mt-12 text-center md:text-left">
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-relaxed">
-              Didn't receive the code?<br/>
+              Didn't receive the code?<br />
               <button onClick={() => toast.info("Check Terminal", { description: "Grab the code from your VS Code terminal (Sandbox Mode)." })} className="text-indigo-600 hover:text-indigo-700 mt-1">
-                  Resend Security Code
+                Resend Security Code
               </button>
             </p>
           </div>

@@ -16,12 +16,21 @@ export const authOptions: NextAuthConfig = {
                 await dbConnect()
 
                 try {
-                    const user = await UserModel.findOne({
-                        $or: [
-                            { email: credentials.identifier },
-                            { username: credentials.identifier }
-                        ]
-                    })
+                    // Email is case-insensitive; username is case-sensitive.
+                    // We use a case-insensitive regex for the email lookup so that
+                    // existing accounts whose emails were stored with mixed case
+                    // (before the lowercase normalisation was added) still work.
+                    const identifier = (credentials.identifier as string).trim();
+                    const isEmail = identifier.includes('@');
+
+                    // Escape any regex special chars in the identifier before using as regex
+                    const escaped = identifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+                    const user = await UserModel.findOne(
+                        isEmail
+                            ? { email: { $regex: new RegExp(`^${escaped}$`, 'i') } }
+                            : { username: identifier }   // exact match — usernames are case-sensitive
+                    )
 
                     if (!user) {
                         throw new Error("No user found")

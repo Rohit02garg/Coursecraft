@@ -21,7 +21,15 @@ export async function GET(request: Request) {
         }
 
         const userInDB = await UserModel.findById(user._id)
-            .populate("enrolledCourses", "title description thumbnail instructor chapters")
+            .populate({
+                path: "enrolledCourses",
+                select: "title description thumbnail instructor chapters",
+                populate: {
+                    path: "instructor",
+                    select: "username email",   // pull username (and email as fallback)
+                    model: "User"
+                }
+            })
 
         if (!userInDB) {
             console.error("User not found")
@@ -52,7 +60,7 @@ export async function GET(request: Request) {
             enrollments.push({
                 id: course._id,
                 title: course.title,
-                instructor: course.instructor?.username || "Unknown",
+                instructor: course.instructor?.username || course.instructor?.email || "Unknown",
                 thumbnail: course.thumbnail,
                 progress: progressPercentage
             })

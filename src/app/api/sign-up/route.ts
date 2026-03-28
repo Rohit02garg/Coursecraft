@@ -9,7 +9,10 @@ export async function POST(request: Request) {
 
     try {
 
-        const { username, email, password } = await request.json();
+        const body = await request.json();
+        const { username, password } = body;
+        // Email is case-insensitive in real life — normalize to lowercase
+        const email = (body.email as string).toLowerCase().trim();
 
         const existingUserByUsername = await UserModel.findOne(
             {

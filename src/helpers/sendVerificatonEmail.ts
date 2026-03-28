@@ -33,7 +33,7 @@ export async function sendVerificationEmail(
         // Even if Resend fails (e.g. unverified email), we still return success=true 
         // because we've already logged the code to your terminal!
         console.warn("Resend skipped/failed, but sandbox is active.");
-        
+
         return {
             success: true,
             message: "Sandbox mode enabled: check terminal for code."

@@ -9,6 +9,7 @@ import { auth } from "@/auth";
 // Our Database Imports!
 import dbConnect from "@/lib/dbConnect";
 import CourseModel from "@/model/Course";
+import "@/model/User"; // Ensures the User model is registered for populate("instructor") to work
 
 // Our new Component from Cheat Code #7!
 import CourseCard from "@/components/ui/CourseCard";

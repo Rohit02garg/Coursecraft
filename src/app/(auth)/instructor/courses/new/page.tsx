@@ -7,7 +7,7 @@ import { Loader2, ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import Link from "next/link"
+import BackButton from "@/components/ui/BackButton"
 
 export default function NewCoursePage() {
 
@@ -52,11 +52,7 @@ export default function NewCoursePage() {
             <div className="max-w-2xl mx-auto px-4 py-12">
 
                 {/* Back Link */}
-                <Link href="/instructor">
-                    <Button variant="ghost" size="sm" className="text-slate-500 hover:text-[#1A237E] rounded-full mb-6 -ml-2">
-                        <ChevronLeft className="h-4 w-4 mr-1" /> Back to Studio
-                    </Button>
-                </Link>
+                <BackButton fallbackHref="/instructor" label="Back to Studio" variant="ghost" className="mb-6 -ml-2" />
 
                 <h1 className="text-3xl font-extrabold text-[#1A237E] mb-2">Create New Course</h1>
                 <p className="text-slate-500 mb-8">Start with the basics. You can add chapters in the next step.</p>
